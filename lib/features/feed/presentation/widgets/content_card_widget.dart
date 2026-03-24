@@ -36,9 +36,9 @@ class ContentCardWidget extends StatelessWidget {
         // Main scrollable content
         SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(right: 80, bottom: 16),
+            padding: const EdgeInsets.only(right: 16, bottom: 16),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+              padding: const EdgeInsets.fromLTRB(20, 60, 8, 20),
               physics: const BouncingScrollPhysics(),
               child: _buildCardContent(card)
                   .animate(key: ValueKey(card.id))
@@ -55,11 +55,18 @@ class ContentCardWidget extends StatelessWidget {
           child: TopicBadge(topicId: card.topicId, topicName: card.topicName),
         ),
 
-        // Card type icon — top right (outside interaction bar column)
+        // Card type chip + difficulty badge — top right
         Positioned(
           top: MediaQuery.paddingOf(context).top + 12,
           right: 20,
-          child: _CardTypeChip(cardType: card.cardType),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _DifficultyBadge(difficulty: card.difficulty),
+              const SizedBox(width: 8),
+              _CardTypeChip(cardType: card.cardType),
+            ],
+          ),
         ),
 
         // Interaction bar — right side, vertically centered
@@ -67,13 +74,6 @@ class ContentCardWidget extends StatelessWidget {
           right: 12,
           bottom: MediaQuery.paddingOf(context).bottom + 80,
           child: InteractionBar(card: card),
-        ),
-
-        // Difficulty badge — bottom left
-        Positioned(
-          left: 20,
-          bottom: MediaQuery.paddingOf(context).bottom + 80,
-          child: _DifficultyBadge(difficulty: card.difficulty),
         ),
       ],
     );

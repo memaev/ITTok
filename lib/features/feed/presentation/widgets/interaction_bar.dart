@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:tiktok_for_it/core/theme/app_theme.dart';
 import 'package:tiktok_for_it/core/theme/topic_colors.dart';
 import 'package:tiktok_for_it/core/utils/extensions.dart';
@@ -19,21 +18,12 @@ class InteractionBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isLiked = ref.watch(likedCardsProvider.select((s) => s.contains(card.id)));
     final isSaved = ref.watch(savedCardIdsProvider.select((s) => s.contains(card.id)));
     final topicColor = TopicColors.forTopic(card.topicId);
-    final likeCount = card.likes + (isLiked ? 1 : 0);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _ActionButton(
-          icon: isLiked ? Icons.favorite : Icons.favorite_border,
-          color: isLiked ? AppTheme.liked : AppTheme.textPrimary,
-          label: likeCount.compactFormat,
-          onTap: () => ref.read(likedCardsProvider.notifier).toggle(card.id),
-        ),
-        const SizedBox(height: 20),
         _ActionButton(
           icon: isSaved ? Icons.bookmark : Icons.bookmark_border,
           color: isSaved ? AppTheme.saved : AppTheme.textPrimary,
@@ -42,17 +32,6 @@ class InteractionBar extends ConsumerWidget {
             ref.read(savedCardIdsProvider.notifier).toggle(card.id);
             final msg = isSaved ? 'Removed from saved' : 'Saved to collection';
             context.showSnack(msg);
-          },
-        ),
-        const SizedBox(height: 20),
-        _ActionButton(
-          icon: Icons.share_outlined,
-          color: AppTheme.textPrimary,
-          label: 'Share',
-          onTap: () {
-            Share.share(
-              '${card.title}\n\n${card.body.substring(0, card.body.length.clamp(0, 120))}...\n\nLearned on ITiktok 🚀',
-            );
           },
         ),
         const SizedBox(height: 20),
